@@ -1,0 +1,23 @@
+FROM resin/armhf-alpine:3.6
+
+ARG SUPERCRONIC_VERSION=0.1.5
+ARG SUPERCRONIC_SHA1SUM=e434438805b65d770399b46a5f5cd7b3bb026745
+
+ENV SUPERCRONIC=supercronic-linux-arm
+
+WORKDIR /opt/cron
+
+VOLUME /opt/cron
+
+RUN [ "cross-build-start" ]
+
+RUN apk add --no-cache curl \
+  && curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v${SUPERCRONIC_VERSION}/${SUPERCRONIC}" \
+  && echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - \
+  && chmod +x "$SUPERCRONIC" \
+  && mv "$SUPERCRONIC" "/usr/local/bin/supercronic" \
+  && apk del curl
+
+CMD [ "supercronic", "/opt/cron/crontab" ]
+
+RUN [ "cross-build-end" ]
