@@ -275,6 +275,9 @@ function round (value, precision = 0) {
   return Math.round(value * multiplier) / multiplier;
 }
 
+const startTime = Date.now();
+logger('Cronjob started');
+
 Promise.resolve()
   /* First, get the events from Google Calendar */
   .then(() => getEvents())
@@ -315,4 +318,11 @@ Promise.resolve()
       });
   }, Promise.resolve()))
   /* Error getting the event list */
-  .catch(err => notifyUser('Failed to get event list', err.stack));
+  .catch(err => notifyUser('Failed to get event list', err.stack))
+  .then(() => {
+    const endTime = Date.now();
+
+    logger('Cronjob fininshed', {
+      executionTime: endTime - startTime
+    });
+  });
