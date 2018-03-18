@@ -175,7 +175,7 @@ function getDistance (start, dest, isReturn = false) {
   }
 
   return faasRequest({
-    url: 'func_sdistance-finder',
+    url: 'func_distance-finder',
     body: data
   }).then(metres => {
     /* Convert metres to miles */
