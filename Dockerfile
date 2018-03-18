@@ -1,15 +1,16 @@
-FROM resin/armhf-alpine:3.6
+FROM python:3-alpine
 
 ARG SUPERCRONIC_VERSION=0.1.5
-ARG SUPERCRONIC_SHA1SUM=02039c3d4d7e74658be8f1ae911686dbc28c4a4a
+ARG SUPERCRONIC_SHA1SUM=9aeb41e00cc7b71d30d33c57a2333f2c2581a201
 
-ENV SUPERCRONIC=supercronic-linux-arm
+ENV SUPERCRONIC=supercronic-linux-amd64
 
-WORKDIR /opt/cron
+ENV CRON_SCHEDULE="* * * * *"
+ENV CRON_COMMAND="python /opt/mileage.py"
 
-VOLUME /opt/cron
+WORKDIR /opt
 
-RUN [ "cross-build-start" ]
+VOLUME /opt/scripts
 
 RUN apk add --no-cache curl \
   && curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v${SUPERCRONIC_VERSION}/${SUPERCRONIC}" \
@@ -18,6 +19,4 @@ RUN apk add --no-cache curl \
   && mv "$SUPERCRONIC" "/usr/local/bin/supercronic" \
   && apk del curl
 
-CMD [ "supercronic", "/opt/cron/crontab" ]
-
-RUN [ "cross-build-end" ]
+CMD [ "/bin/sh", "/opt/crontab.sh" ]

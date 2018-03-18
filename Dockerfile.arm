@@ -1,13 +1,16 @@
-FROM resin/armhf-alpine:3.6
+FROM resin/raspberrypi3-alpine-python:3
 
 ARG SUPERCRONIC_VERSION=0.1.5
 ARG SUPERCRONIC_SHA1SUM=e434438805b65d770399b46a5f5cd7b3bb026745
 
 ENV SUPERCRONIC=supercronic-linux-arm
 
-WORKDIR /opt/cron
+ENV CRON_SCHEDULE="* * * * *"
+ENV CRON_COMMAND="python /opt/mileage.py"
 
-VOLUME /opt/cron
+WORKDIR /opt
+
+VOLUME /opt/scripts
 
 RUN [ "cross-build-start" ]
 
@@ -18,6 +21,6 @@ RUN apk add --no-cache curl \
   && mv "$SUPERCRONIC" "/usr/local/bin/supercronic" \
   && apk del curl
 
-CMD [ "supercronic", "/opt/cron/crontab" ]
+CMD [ "/bin/sh", "/opt/crontab.sh" ]
 
 RUN [ "cross-build-end" ]
