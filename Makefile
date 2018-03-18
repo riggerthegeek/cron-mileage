@@ -54,9 +54,8 @@ publish:
 .PHONY: publish
 
 serve:
-	docker run -it --rm -v="${PWD}:/opt" ${TAG_NAME}:linux-${CURRENT_ARCH}-latest sh
+	docker run -it --rm -v="${PWD}:/home/node/app" ${TAG_NAME}:linux-${CURRENT_ARCH}-latest ${CMD}
 .PHONY: serve
-
 
 test:
 	npm test
