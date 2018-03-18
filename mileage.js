@@ -15,7 +15,10 @@ const yml = require('js-yaml');
 /* Files */
 
 function logger (message, data = {}) {
-  console.log(JSON.stringify(message, data));
+  console.log(JSON.stringify({
+    message,
+    data
+  }));
 }
 
 function secretOrEnvvar (secretFile, envvar) {
