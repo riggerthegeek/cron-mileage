@@ -8,6 +8,11 @@ ifneq ($(DOCKER_USER), "")
 TAG_NAME = ${DOCKER_USER}/${DOCKER_IMG}
 endif
 
+CURRENT_ARCH = amd64
+ifeq ($(shell uname -m), armv7l)
+CURRENT_ARCH = arm
+endif
+
 build:
 	@echo "Building latest Docker images"
 	docker build --file ./Dockerfile --tag ${TAG_NAME}:linux-amd64-latest .
@@ -49,9 +54,9 @@ publish:
 .PHONY: publish
 
 serve:
-	@echo "todo"
-	exit 1
+	docker run -it --rm -v="${PWD}:/opt" ${TAG_NAME}:linux-${CURRENT_ARCH}-latest sh
 .PHONY: serve
+
 
 test:
 	npm test
