@@ -70,15 +70,22 @@ const cache = lruCache({
   maxAge: config.cache.maxAge
 });
 
-const faasRequest = request.defaults({
-  auth: {
-    username: config.faas.username,
-    password: config.faas.password
-  },
-  baseUrl: `${config.faas.url}/function`,
-  method: 'POST',
-  json: true
-});
+function faasRequest (opts) {
+  const defaultOpts = {
+    baseUrl: `${config.faas.url}/function`,
+    method: 'POST',
+    json: true
+  };
+
+  if (config.faas.username && config.faas.password) {
+    defaultOpts.auth = {
+      username: config.faas.username,
+      password: config.faas.password
+    };
+  }
+
+  return request.defaults(defaultOpts)(opts);
+}
 
 function createExpense (data) {
   const expense = {
