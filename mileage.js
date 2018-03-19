@@ -56,7 +56,7 @@ const config = {
   },
   notify: {
     from: secretOrEnvvar('/run/secrets/cron-mileage-notify-from', 'NOTIFY_FROM'),
-    snitch: process.env.CRON_SNITCH,
+    snitch: secretOrEnvvar('/run/secrets/cron-mileage-snitch-url', 'CRON_SNITCH'),
     subject: process.env.NOTIFY_SUBJECT,
     to: secretOrEnvvar('/run/secrets/cron-mileage-notify-to', 'NOTIFY_TO')
   }
