@@ -56,6 +56,7 @@ const config = {
   },
   notify: {
     from: secretOrEnvvar('/run/secrets/cron-mileage-notify-from', 'NOTIFY_FROM'),
+    snitch: process.env.CRON_SNITCH,
     subject: process.env.NOTIFY_SUBJECT,
     to: secretOrEnvvar('/run/secrets/cron-mileage-notify-to', 'NOTIFY_TO')
   }
@@ -88,6 +89,25 @@ function faasRequest (opts) {
   }
 
   return request.defaults(defaultOpts)(opts);
+}
+
+function callSnitch () {
+  if (!config.notify.snitch) {
+    /* Do nothing */
+    return Promise.resolve();
+  }
+
+  logger('Calling Dead Man\'s Snitch', {
+    url: config.notify.snitch
+  });
+
+  return request.get(config.notify.snitch)
+    .catch((err) => {
+      logger('Error calling Dead Man\'s Snitch', {
+        err: err.stack,
+        url: config.notify.snitch
+      });
+    });
 }
 
 function createExpense (data) {
@@ -280,6 +300,7 @@ logger('Cronjob started');
 
 Promise.resolve()
   /* First, get the events from Google Calendar */
+  .then(() => callSnitch())
   .then(() => getEvents())
   .then(result => result.reduce((thenable, event) => {
     const data = {
