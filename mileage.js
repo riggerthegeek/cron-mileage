@@ -223,7 +223,10 @@ function getDistance (start, dest, isReturn = false) {
 }
 
 function getEvents () {
-  const timeMax = new Date();
+  const now = Date.now();
+  const day = 24 * 60 * 60 * 1000;
+
+  const timeMax = new Date(now - day);
 
   logger('Getting events from Google calendar', {
     timeMax
