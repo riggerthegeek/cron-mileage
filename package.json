@@ -1,6 +1,6 @@
 {
   "name": "cron-mileage",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Convert Google Calendar events into FreeAgent mileage claims",
   "main": "mileage.js",
   "scripts": {
